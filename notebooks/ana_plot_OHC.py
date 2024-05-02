@@ -30,7 +30,8 @@ import repackage
 repackage.add('../../')
 repackage.add('../')
 
-os.chdir('/sword/apom/notebooks')
+# os.chdir('/sword/apom/notebooks')
+os.chdir('/g/data/jk72/deg581/apom/ana/notebooks')
 
 # %%
 
@@ -101,8 +102,9 @@ cp0=4181.3
 
 # %%
 # load grid from first file
-datelist = np.array(range(14,17,1))
-FilePath = '../data/raw/roms_avg_'
+datelist = np.array(range(1,17,1))
+# FilePath = '../data/raw/roms_avg_'
+FilePath = '/g/data/jk72/deg581/apom/mdl/amery_hr_repeatyear/roms_avg_'
 
 dates = datelist[0]
 filename=FilePath+str(dates).zfill(4)+'.nc'
@@ -118,10 +120,20 @@ dV = ds_raw.dA*ds_raw.dz.mean(dim='ocean_time')
 # load and loop single ROMS netcdf with xr
 for dates in datelist:
     filename=FilePath+str(dates).zfill(4)+'.nc'
-    print('opening ',filename)
-    ds=xr.open_dataset(filename)
-    ds = ds[['temp','zeta','zice','h','Vtransform','hc','Cs_r','s_w','s_rho','Cs_w','mask_rho','pm','pn']]
-    print(ds.nbytes/1e9,'G')
+    
+    if dates==datelist[0]:
+        filename=FilePath+str(dates).zfill(4)+'.nc'
+        print('opening ',filename)
+        ds_raw=xr.open_dataset(filename)
+        ds_raw = ds_raw[['temp','zeta','zice','h','Vtransform','hc','Cs_r','s_w','s_rho','Cs_w','mask_rho','pm','pn']]
+        print(ds_raw.nbytes/1e9,'G')
+        ds_raw,grid = processROMSGrid(ds_raw)
+        dV = ds_raw.dA*ds_raw.dz.mean(dim='ocean_time')
+    else:         
+        print('opening ',filename)
+        ds=xr.open_dataset(filename)
+        ds = ds[['temp','zeta','zice','h','Vtransform','hc','Cs_r','s_w','s_rho','Cs_w','mask_rho','pm','pn']]
+        print(ds.nbytes/1e9,'G')
     
     
 
@@ -145,11 +157,11 @@ for dates in datelist:
 # %%
 # plot final metrics
 plt.plot(time,TotalOHC)
-plt.show()
+plt.savefig('TotalOHC.png')
 plt.plot(time,TotalOHC_1000)
-plt.show()
+plt.savefig('TotalOHC_1000.png')
 plt.plot(time,TotalOHC_subIce)
-plt.show()
+plt.savefig('TotalOHC_subIce.png')
 
 
 # %%
