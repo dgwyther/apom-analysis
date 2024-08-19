@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -P jk72
+#PBS -q normal
+#PBS -l mem=128gb,walltime=24:00:00,ncpus=1
+#PBS -l wd
+#PBS -N cdo_vbar
+#PBS -M david.gwyther@gmail.com
+#PBS -l storage=gdata/jk72
+cd /g/data/jk72/deg581/apom/ana/bash
+
+module load cdo
+
+cdo -v timselmean,5 -cat '/g/data/jk72/deg581/apom/mdl/amery_hr_repeatyear_v11_ctrl_lowMelt/roms_his_001[8-9].nc' ../data/proc/roms_v11_ctrl_lowMelt_his_0018-19_5daymn_full.nc
+
+exit
